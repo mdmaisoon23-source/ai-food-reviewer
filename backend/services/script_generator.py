@@ -121,6 +121,17 @@ def _llm_script(shop: ShopInfo, language: str, dishes: str) -> ReviewScript:
         json=payload,
         timeout=60,
     )
+    if resp.status_code == 400:
+        print(f"[script_generator] Groq 400 body: {resp.text[:400]}; retrying without response_format")
+        payload.pop("response_format", None)
+        resp = httpx.post(
+            f"{LLM_BASE_URL.rstrip('/')}/chat/completions",
+            headers={"Authorization": f"Bearer {LLM_API_KEY}"},
+            json=payload,
+            timeout=60,
+        )
+    if resp.status_code >= 400:
+        print(f"[script_generator] Groq {resp.status_code} body: {resp.text[:400]}")
     resp.raise_for_status()
     content = resp.json()["choices"][0]["message"]["content"]
     return _parse_llm_json(content)
