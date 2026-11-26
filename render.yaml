@@ -10,7 +10,7 @@ services:
       - key: GROQ_API_KEY
         sync: false            # you paste this in the Render dashboard (free key from console.groq.com)
       - key: LLM_MODEL
-        value: llama-3.3-70b-versatile
+        value: openai/gpt-oss-120b
       # Smaller/faster video for Render's free CPU. Raise on a paid plan.
       - key: VIDEO_WIDTH
         value: "540"
